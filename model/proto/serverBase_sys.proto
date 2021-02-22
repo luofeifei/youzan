@@ -1,0 +1,21 @@
+syntax = "proto3";
+package serverBase;
+
+message spaceName {
+  string spaceName = 1;
+}
+
+message spaceNameInst {
+  string spaceName = 1;
+  int64 seed = 2;
+  int64 batch_size = 3;
+}
+
+message ResultId {
+  int64 id = 1;
+}
+
+service sys {
+  rpc InitID(spaceNameInst) returns (ResultId) {}
+  rpc GetID(spaceName) returns (ResultId) {}
+}

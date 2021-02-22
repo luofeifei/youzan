@@ -1,0 +1,298 @@
+syntax = "proto3";
+package serverAdmin;
+
+// 输出空
+message ResultEmpty {
+}
+
+// 分页
+message PageInfo {
+  int32 page = 1;
+  int32 pageSize = 2;
+  string orderKey = 3;
+}
+
+// 默认输出
+message Result {
+  int32 code = 1;
+  string msg = 2;
+  map<string, string> header = 3;
+  bytes body = 4;
+}
+
+// ID
+message ReqId {
+  int64 id = 1;
+}
+
+// 管理员登录提交
+message ReqLogin {
+  string username = 1;
+  string password = 2;
+  string userkey = 3;
+}
+
+// 权限检查
+message ReqPermissions {
+  int64 id = 1;
+  string path = 2;
+  string method = 3;
+}
+
+// 管理员
+message SystemUser {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string username = 4;
+  string password = 5;
+  string encrypt = 6;
+  string nick_name = 7;
+  string avatar = 8;
+  string wei_xin = 9;
+  string mobile = 10;
+  int32 online = 11;
+  int32 state = 12;
+  int32 loginFailure = 13;
+  int32 login_num = 14;
+  string last_login_ip = 15;
+  int32 last_login_time = 16;
+  repeated SystemGroup group = 17;
+}
+
+message ResSystemUser {
+  repeated SystemUser list = 1;
+  int32  count = 2;
+}
+
+// 管理员组
+message SystemGroup {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 pid = 4;
+  string name = 5;
+  string api = 6;
+  string menus = 7;
+  int32 state = 8;
+}
+
+message ResSystemGroup {
+  repeated SystemGroup list = 1;
+  int32  count = 2;
+}
+
+//管理员组成员绑定
+message SystemGroupsLink {
+  int64 id = 1;
+  int64 group_id = 2;
+}
+
+// Menu 数据结构
+message SystemMenu {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string title = 4;
+  int64 pid = 5;
+  int32 type = 6;
+  string path = 7;
+  string icon = 8;
+  string component = 9;
+  int32 keepalive = 10;
+  int32 sort = 11;
+  int32 state = 12;
+}
+
+// 管理员组
+message ResSystemMenu {
+  repeated SystemMenu list = 1;
+  int32  count = 2;
+}
+
+// API 结构体
+message SystemApi {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string path = 4;
+  string description = 5;
+  string api_group = 6;
+  string method = 7;
+}
+
+message ReqSystemAPI {
+  SystemApi req = 1;
+  PageInfo page = 2;
+}
+
+message ResSystemApi {
+  repeated SystemApi list = 1;
+  int32  count = 2;
+}
+
+// 文件上传附件 结构体
+message SystemUp {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int32 type = 4; // 用户类型 1企业 2用户 3管理员
+  int64 aid = 5; // 所属用户ID
+  int64 file_id = 6;  // 关联附件ID
+}
+
+// 附件公共附件调用
+message SystemUpCommon {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int32 type = 4;  // 关联附件类型
+  int32 file_type = 5; // 附件类型 1 图片 2视频
+  int64 file_id = 6; // 附件ID
+}
+
+message ReqSystemUpCommon {
+  repeated SystemUpCommon list = 1;
+}
+
+message ReqSystemUpCommonPage {
+  PageInfo page = 1;
+  int32 type = 4;  // 关联附件类型
+}
+
+message SystemUpFile {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string hash = 4; // 文件 hash 值
+  string path = 5; // 目录
+  string name = 6; // 文件名
+  string tag = 7; // 后缀
+  int64 size = 8; // 文件大小
+  int64 duration = 10; // 影片时长
+  int32 state = 11; // 状态
+  int32 type = 12; // 用户类型 1企业 2用户 3管理员
+  int64 aid = 13; // 所属用户ID
+}
+
+message ResSystemUpFile {
+  repeated SystemUpFile list = 1;
+  int32  count = 2;
+}
+
+message ReqSystemUpCheck {
+  string upName = 1;
+  int32 type = 4;
+  int64 aid = 5;
+  string hash = 6;
+}
+
+// 附件管理
+message ReqSystemUp {
+  string upName = 1;
+  SystemUp att = 2;
+  SystemUpFile file = 3;
+}
+
+message ReqSystemUpPage {
+  string upName = 1;
+  PageInfo page = 2;
+  SystemUp req = 3;
+}
+
+// 管理员日志
+message SystemLog {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int32 type = 4;
+  int64 lid = 5;
+  string msg = 6;
+  string data = 7;
+  string ip = 8;
+}
+
+message ResSystemLog {
+  repeated SystemLog list = 1;
+  int32  count = 2;
+}
+
+message ReqSystemUser {
+  SystemUser user = 1;
+  repeated int64 group = 2;
+}
+
+message ReqLogPage {
+  PageInfo page = 1;
+  SystemLog req = 2;
+}
+
+// 系统配置中心
+message SysConfig {
+  int64 id = 1; // 配置ID
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string name = 4; // 配置名称
+  string alias = 5; // 配置别名
+  repeated int64 limit_admin = 6; // 限制可操作管理员
+  bytes config_rule = 7; // 用户配置对应名称
+  bytes config_value = 8; // 用户配置对应值
+  int64 admin_id = 9; // 当前操作管理员ID
+}
+
+message ResSysConfigValue {
+  map<string, int64> alias = 1;
+}
+
+message ResSysConfig {
+  repeated SysConfig list = 1;
+  int32  count = 2;
+}
+
+service adminSys {
+  // 权限检查
+  rpc PermissionsByRequest (ReqPermissions) returns (Result) {}
+  // 管理员列表修改变动
+  rpc SysUserLogin(ReqLogin) returns (SystemUser) {}  //管理员登录
+  rpc SysUserLoginOut(SystemUser) returns (Result) {}  //管理员退出登录
+  rpc SysUserRoles(ReqId) returns (ResSystemMenu) {}//获取管理员路由列表
+  rpc SysUserList(ResultEmpty) returns (ResSystemUser) {}//获取管理员所有列表
+  rpc SysUserPage(PageInfo) returns (ResSystemUser) {}//获取管理员分页
+  rpc SysUserData(ReqId) returns (SystemUser) {}//获取管理员信息
+  rpc SysUserSave(ReqSystemUser) returns (SystemUser) {}//修改添加管理员
+  rpc SysUserDelete(SystemUser) returns (Result) {}//删除管理员
+  // 管理员用户组
+  rpc SysGroupAll(ResultEmpty) returns (ResSystemGroup) {}//获取所有角色组
+  rpc SysGroupPage(PageInfo) returns (ResSystemGroup) {}//显示角色组分页
+  rpc SysGroupData(SystemGroup) returns (SystemGroup) {}//获取角色组信息
+  rpc SysGroupSave(SystemGroup) returns (SystemGroup) {}//修改添加角色组
+  rpc SysGroupDelete(SystemGroup) returns (Result) {}//删除角色组
+  // 管理员菜单组
+  rpc SysMenuAll(ResultEmpty) returns (ResSystemMenu) {}//获取所有菜单
+  rpc SysMenuPage(PageInfo) returns (ResSystemMenu) {}//获取管理菜单分页
+  rpc SysMenuData(SystemMenu) returns (SystemMenu) {}//获取菜单信息
+  rpc SysMenuSave(SystemMenu) returns (SystemMenu) {}//修改添加菜单
+  rpc SysMenuDelete(SystemMenu) returns (Result) {}//删除菜单
+  // API权限管理
+  rpc SysApiAll(ResultEmpty) returns (ResSystemApi) {}//获取所有API
+  rpc SysApiPage(ReqSystemAPI) returns (ResSystemApi) {}//获取管理API分页
+  rpc SysApiData(SystemApi) returns (SystemApi) {}//获取API信息
+  rpc SysApiSave(SystemApi) returns (SystemApi) {}//修改添加API
+  rpc SysApiDelete(SystemApi) returns (Result) {}//删除API
+  // 附件
+  rpc SysUpSave(ReqSystemUp) returns (SystemUpFile) {} //修改添加附件
+  rpc SysVideoData(ReqId) returns (SystemUpFile) {} //获取视频附件信息
+  rpc SysUpCheck(ReqSystemUpCheck) returns (SystemUpFile) {} //检查并读取附件信息
+  rpc SysUpPage(ReqSystemUpPage) returns (ResSystemUpFile) {} //获取附件列表分页
+  rpc SysUpCommonPage(ReqSystemUpCommonPage) returns (ResSystemUpFile) {} //获取公共附件分页
+  rpc SysUpCommonAdd(ReqSystemUpCommon) returns (Result) {} //添加附件ID到公共附件中
+  rpc SysUpCommonDel(ReqId) returns (Result) {}//删除公共附件ID
+  // 管理员日志分页
+  rpc SysLogPage(ReqLogPage) returns (ResSystemLog) {}//获取管理员日志分页
+  // 系统配置中心
+  rpc SysConfigPage(PageInfo) returns (ResSysConfig) {} // 获取系统配置分页
+  rpc SysConfigData(SysConfig) returns (SysConfig) {} // 获取系统配置数据
+  rpc SysConfigSave(SysConfig) returns (SysConfig) {} // 修改添加系统配置
+  rpc SysConfigDelete(SysConfig) returns (Result) {} // 删除系统配置
+  rpc SysConfigValue(ResSysConfigValue) returns (Result) {} // 根据别名读取所有配置
+}

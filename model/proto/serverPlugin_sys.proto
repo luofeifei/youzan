@@ -1,0 +1,20 @@
+syntax = "proto3";
+package serverPlugin;
+
+message ReqApiPlugin {
+  int64 uid = 1; // 用户ID
+  int64 coid = 2; // 企业ID
+  int64 feature_id = 3; // 插件ID
+  bytes plugin_list = 4; // 插件列表及值
+}
+
+// 默认输出
+message Result {
+  int32 code = 1;
+  string msg = 2;
+  bytes body = 4;
+}
+
+service sys {
+  rpc GetApiPluginData(ReqApiPlugin) returns (Result) {} // 提交插件列表及值数据 插件处理并返回结果数组
+}

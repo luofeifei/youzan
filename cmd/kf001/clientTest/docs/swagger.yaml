@@ -1,0 +1,156 @@
+basePath: /api/user
+definitions:
+  comm.Response:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      message:
+        type: string
+    type: object
+  request.Login:
+    properties:
+      code:
+        description: 验证码
+        type: string
+      codeId:
+        description: 验证码id
+        type: string
+      pass:
+        description: 账户密码或短信验证码
+        type: string
+      type:
+        description: 登录类型  0系统ID 1用户名 2手机号 3微信 4支付宝 5字节跳动 只支持 1与2登录
+        type: integer
+      user:
+        description: 用户账户
+        type: string
+    required:
+    - pass
+    - type
+    - user
+    type: object
+  request.UserRegionLngLat:
+    properties:
+      lat:
+        description: 经度
+        type: number
+      lng:
+        description: 纬度
+        type: number
+    required:
+    - lat
+    - lng
+    type: object
+host: 192.168.3.110:9002
+info:
+  contact:
+    email: qinwong@live.com
+    name: QinWong
+  description: 提供用户登录、查询等所有用户相关操作
+  license:
+    name: Apache 2.0
+  title: Go 用户接口
+  version: 1.0.0
+paths:
+  /base/region:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 0 省 其他为上级ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comm.Response'
+      summary: 获取国内地区数据列表
+      tags:
+      - base
+  /base/regionLngLat:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: date
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRegionLngLat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comm.Response'
+      summary: 根据经纬度返回所在城市信息
+      tags:
+      - base
+  /captcha:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comm.Response'
+      summary: 生成验证码
+      tags:
+      - base
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: 接口访问来源
+        in: header
+        name: platform
+        required: true
+        type: string
+      - description: date
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comm.Response'
+      summary: 用户登录
+      tags:
+      - base
+  /user/out:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - ApiKeyAuth: []
+      summary: 用户退出
+      tags:
+      - system_user
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

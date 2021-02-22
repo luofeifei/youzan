@@ -1,0 +1,236 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "提供用户登录、查询等所有用户相关操作",
+        "title": "Go 用户接口",
+        "contact": {
+            "name": "QinWong",
+            "email": "qinwong@live.com"
+        },
+        "license": {
+            "name": "Apache 2.0"
+        },
+        "version": "1.0.0"
+    },
+    "host": "192.168.3.110:9002",
+    "basePath": "/api/user",
+    "paths": {
+        "/base/region": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "base"
+                ],
+                "summary": "获取国内地区数据列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "0 省 其他为上级ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/comm.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/base/regionLngLat": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "base"
+                ],
+                "summary": "根据经纬度返回所在城市信息",
+                "parameters": [
+                    {
+                        "description": "date",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UserRegionLngLat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/comm.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/captcha": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "base"
+                ],
+                "summary": "生成验证码",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/comm.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "用户登录接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "base"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "接口访问来源",
+                        "name": "platform",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "date",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/comm.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/out": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system_user"
+                ],
+                "summary": "用户退出"
+            }
+        }
+    },
+    "definitions": {
+        "comm.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.Login": {
+            "type": "object",
+            "required": [
+                "pass",
+                "type",
+                "user"
+            ],
+            "properties": {
+                "code": {
+                    "description": "验证码",
+                    "type": "string"
+                },
+                "codeId": {
+                    "description": "验证码id",
+                    "type": "string"
+                },
+                "pass": {
+                    "description": "账户密码或短信验证码",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "登录类型  0系统ID 1用户名 2手机号 3微信 4支付宝 5字节跳动 只支持 1与2登录",
+                    "type": "integer"
+                },
+                "user": {
+                    "description": "用户账户",
+                    "type": "string"
+                }
+            }
+        },
+        "request.UserRegionLngLat": {
+            "type": "object",
+            "required": [
+                "lat",
+                "lng"
+            ],
+            "properties": {
+                "lat": {
+                    "description": "经度",
+                    "type": "number"
+                },
+                "lng": {
+                    "description": "纬度",
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -1,0 +1,46 @@
+syntax = "proto3";
+package serverPlugin;
+
+message ResultEmpty {
+}
+
+// TODO: 公共部分  -----------------------------------------------------------
+// 分页
+message PageInfo {
+  int32 page = 1;
+  int32 pageSize = 2;
+  string orderKey = 3;
+}
+
+// 默认输出
+message Result {
+  int32 code = 1;
+  string msg = 2;
+  map<string, string> header = 3;
+  bytes body = 4;
+}
+
+// ID
+message ReqId {
+  int64 id = 1;
+}
+
+// TODO: 资金流水记录
+message CoUserFundRecord {
+  enum PayType {
+    WX_PAY = 0; //微信支付
+    ALI_PAY = 1; // 支付宝
+    ANT_CREDIT_PAY = 2; // 花呗支付
+    BANK_CARD = 3; // 银行卡
+    QQ_PAY = 4; // QQ支付
+    SHOP_BALANCE = 5; // 余额支付
+    MARK_PAY = 6; // 线下标记
+    WX_PAY_SELF = 7; // 微信支付-自有
+    ALI_PAY_SELF = 8; // 支付宝支付-自有
+  }
+  int64 id = 1;
+  PayType pay_type = 2;
+}
+
+service sys {
+}

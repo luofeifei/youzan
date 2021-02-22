@@ -1,0 +1,1219 @@
+syntax = "proto3";
+package serverCo;
+
+message ResultEmpty {
+}
+
+// TODO: 公共部分  -----------------------------------------------------------
+// 分页
+message PageInfo {
+  int32 page = 1;
+  int32 pageSize = 2;
+  string orderKey = 3;
+}
+
+// 默认输出
+message Result {
+  int32 code = 1;
+  string msg = 2;
+  map<string, string> header = 3;
+  bytes body = 4;
+}
+
+// ID
+message ReqId {
+  int64 id = 1;
+}
+
+// TODO: Mongo 数据库部分 -----------------------------------------------------------
+// TODO: 企业分类及类目
+// co_type 企业分类 大类
+message CoType {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 pid = 4;
+  string name = 5;
+  int32 state = 6;
+}
+
+message CoTypeSimple {
+  int64 id = 1;
+  int64 pid = 4;
+  string name = 5;
+}
+
+message ResCoType {
+  repeated CoType list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业绑定关系
+// co_sys_binding 企业绑定关系
+message CoSysBinding {
+  int64 id = 1; // 企业ID后台菜单
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int32 type = 4; // 类型 1菜单 2组件 3权限组
+  int64 type_id = 5; // 所属企业分类ID
+  repeated int64 list = 7; //  绑定的ID 列表
+  int32 count = 8; // 包含的ID 数量
+}
+
+message ResCoSysBinding {
+  repeated CoSysBinding list = 1;
+  int32 count = 2;
+}
+
+// co_sys_binding 企业绑定关系 - VIP 购买指定
+message CoSysBindingVip {
+  int64 id = 1; // 企业ID后台菜单
+  int32 type = 4; // 类型 1菜单 2插件 3权限组
+  int64 type_id = 5; // 所属企业分类ID
+  int64 limit_id = 6; // 列表中的ID
+  repeated int64 vip_id = 7; // 绑定的VIP
+  repeated string vip_name = 8; // 绑定的VIP 名称
+}
+
+message ResCoSysBindingVip {
+  repeated CoSysBindingVip list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业菜单权限管理
+// co_menu Menu 数据结构
+message CoMenu {
+  int64 id = 1; // 企业ID后台菜单
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 pid = 4; // 父级
+  int32 type = 5; // 类型 0 菜单 1路由
+  string title = 6; // 规则名称
+  string path = 7; // 访问地址
+  string component = 8; // 模板地址
+  string icon = 9; // 图标
+  bool is_display = 10; // 无权限是否显示
+  int32 sort = 11; // 权重
+  int32 state = 12; // 状态
+  repeated CoMenu children = 13;
+}
+
+message ReqCoMenu {
+  PageInfo page = 1;
+  CoMenu req = 2;
+}
+
+message ResCoMenu {
+  repeated CoMenu list = 1;
+  int32  count = 2;
+}
+
+// co_menu_api 企业菜单 关联API 权限
+message CoMenuAPI {
+  int64 id = 1; // 企业菜单绑定权限
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 menu_id = 4; // 所属菜单ID
+  string method = 5; // 访问方式
+  string path = 6;  // 访问路径
+  string description = 7; // 接口简介
+}
+
+// 根据菜单 分页
+message ReqCoMenuAPI {
+  PageInfo page = 1;
+  CoMenuAPI req = 2;
+}
+
+message ResCoMenuAPI {
+  repeated CoMenuAPI list = 1;
+  int32 count = 2;
+}
+
+// co_menu_group 企业菜单权限组
+message CoMenuGroup {
+  int64 id = 1; // 用户可控制权限 菜单权限组
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 pid = 4; // 父菜单组权限ID
+  int64 role_id = 5; // 权限角色标签ID
+  string name = 6; // 组名称
+  string note = 7; // 权限提示信息
+  int32 chain = 8; // 是否为连锁店模式
+  bool is_sys = 9; // 是否为公用角色权限组
+  int32 level = 10; // 必须大于权限等级几？才能使用
+  repeated int64 menu_list = 11; // 拥有的菜单权限
+  repeated int64 plugin_list = 12; // 拥有的插件权限
+  int32 state = 13; // 状态
+}
+
+message ReqCoMenuGroup {
+  PageInfo page = 1;
+  CoMenuGroup req = 2;
+}
+
+message ResCoMenuGroup {
+  repeated CoMenuGroup list = 1;
+  int32 count = 2;
+}
+
+// co_menu_group_limit 菜单组 规则限制
+message CoMenuGroupLimit {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 limit_id = 4; // 限制 ID
+  int64 menu_group_id = 5; // 菜单组 ID
+  int32 level = 6; // 权限等级
+  int32 value = 7; // 值
+}
+
+// 输出
+message ResCoMenuGroupLimit {
+  repeated CoMenuGroupLimit list = 1;
+  int32 count = 2;
+}
+
+// co_menu_group_role 菜单角色标签
+message CoMenuGroupRole {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string name = 4; // 角色名
+  string serial = 5; // 标签
+  string tips = 6; // 提示信息
+}
+
+message ResCoMenuGroupRole {
+  repeated CoMenuGroupRole list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业界面组件
+// co_sys_module 企业界面组件
+message CoSysModule {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 class_id = 4; // 所属组件分类
+  int64 plugin_id = 5; // 使用的插件ID -1 不使用插件 根据插件权限决定是否可用
+  string name = 6; // 组件名称
+  string icon = 7; // 组件图标
+  string alias = 8; // 组件模型标签
+  int32 use_type = 9; // 限制方式 1 不限制 2插件验权
+  repeated int32 use_pos = 10; //  使用位置 -1 任意页面可调用 1微页面 2主页 3分类页 10导航条 11个人中心 12悬浮窗 13公共广告 ...
+  repeated int64 limit_admin = 11; // 限制可操作管理员
+  int32 max_num = 12; // 每页面最多可使用次数
+  bool is_init = 13; // 是否初始化组件
+  bool is_sort = 14; // 是否支持排序
+  int32 fix_sort = 15; // 固定排序位置 序号 0~?
+  bool is_display = 16; // 用户无权限是否显示
+  bool is_system = 17; // 是否为系统组件分类 如果为不显示
+  bool is_delete = 18; // 是否支持删除
+  bool is_config = 19; // 是否支持功能设置
+  int32 state = 20; // 状态 1正常 2下线 3开发中 4未开通权限
+  bytes config_rule = 21; // 参数设置规则
+  int64 admin_id = 22; // 当前操作管理员ID
+}
+
+message ReqCoSysModule {
+  PageInfo page = 1;
+  CoSysModule req = 2;
+}
+
+message ResCoSysModule {
+  repeated CoSysModule list = 1;
+  int32 count = 2;
+}
+
+// co_sys_com_class 企业组件分类
+message CoSysModuleClass {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  string name = 4; // 组件类型名称
+  int32 state = 5; // 状态 1正常 2停用
+}
+
+message ResCoSysModuleClass {
+  repeated CoSysModuleClass list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业插件
+// co_sys_plugin
+message CoSysPlugin {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  string group = 4; // 插件组名
+  int32 type = 5; // 插件类型 1 空插件用于插件权限检测 2 so插件 3 gRpc中转
+  int32 model = 6; // 插件模式 1 接口服务 2 工具过滤 3 队列处理 （一般页面为读取接口数据）
+  int32 use_type = 7; // 使用类型 -1 空 1 领卡时 2 购买前 3 购买后 （2才有该方法）
+  repeated int64 limit_admin = 8; // 限制可操作管理员
+  string name = 9; // 插件名称
+  string note = 10; // 权限提示信息
+  string alias = 11; // 插件别名
+  string ver = 12; // 插件版本
+  string topic = 13; // 订阅消费者话题 话题:channel组
+  string path = 14; // 插件路径 SO文件上传后的路径
+  int32 state = 15; // 状态 1正常 2异常
+  int64 admin_id = 16; // 当前操作管理员ID
+}
+
+message ReqCoSysPlugin {
+  PageInfo page = 1;
+  CoSysPlugin req = 2;
+}
+
+message ResCoSysPlugin {
+  repeated CoSysPlugin list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业配置数据规则
+// co_sys_setting
+message CoSysSetting {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 menu_id = 4; // 所属菜单ID
+  string name = 5; // 配置名称
+  bool add_init = 6; // 创建时否初始化企业配置
+  bytes rule = 7; // 配置数据规则
+  int32 state = 8; // 状态 1正常 2下线 3开发中
+}
+
+message ReqCoSysSetting {
+  PageInfo page = 1;
+  CoSysSetting req = 2;
+}
+
+message ResCoSysSetting {
+  repeated CoSysSetting list = 1;
+  int32 count = 2;
+}
+
+// TODO: mysql 数据库部分 -----------------------------------------------------------
+// TODO: 企业权益模板
+// co_sys_benefit
+message CoSysBenefit {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 class_id = 4; // 所属权益分类
+  int64 plugin_id = 5; // 使用的插件ID 根据插件权限决定是否可用
+  string name = 6; // 权益模板名称
+  int32 type = 7; // 权益类型 1权益 2礼包
+  int32 mode = 8; // 服务模式 1系统核单 2商户线下核单
+  string icon = 9; // 默认权益图标
+  bytes parameter = 10; // 参数定义值
+  string description = 11; // 权益简介
+  int32 state = 12; // 状态 1已生效 2预上线 3已下线
+}
+
+message ReqCoSysBenefit {
+  PageInfo page = 1;
+  CoSysBenefit req = 2;
+}
+
+message ResCoSysBenefit {
+  repeated CoSysBenefit list = 1;
+  int32 count = 2;
+}
+
+// co_sys_benefit_class 企业权益分类
+message CoSysBenefitClass {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  string name = 4; // 权益分类名称
+  int64 use_count = 5; // 被使用数
+}
+
+message ResCoSysBenefitClass {
+  repeated CoSysBenefitClass list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业限制规则
+// co_sys_limit
+message CoSysLimit {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  string serial = 4; // 规则标签 开发用
+  string name = 5; // 限制规则名称
+  int64 interval = 6; // 限制间隔 小时
+  string unit = 7; // 单位 年、个、人、件...
+  int64 min = 8; // 最小值
+  int64 max = 9; // 最大值
+  string tips = 10; // 提示
+  string note = 11; // 权限提示
+}
+
+message ReqCoSysLimit {
+  PageInfo page = 1;
+  CoSysLimit req = 2;
+}
+
+message ResCoSysLimit {
+  repeated CoSysLimit list = 1;
+  int32  count = 2;
+}
+
+// 企业限制数据记录
+message CoSysLimitList {
+  int64 coid = 1; // 企业ID
+  int64 limit_id = 2; // 企业限制规则ID
+  int32 act_start = 3; // 限制开始时间
+  int32 act_end = 4; // 限制清理时间
+  int32 value = 5; // 当前值
+}
+
+// TODO: 企业会员权限商品管理
+// co_sys_vip
+message CoSysVip {
+  int64 id = 1; // VIP 权限购买
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string name = 4; // 商品名
+  string title = 5; // 标题
+  repeated int64 type_id = 6; // 所属企业分类数组
+  repeated int64 recommend = 7; // 推荐VIP 产品列表
+  string price_label = 8; // 展示价格标签
+  string cover = 9; // 封面图片
+  int32 quota = 10; // 限购 -1不限制 1终身 2每天 3每周 4每月 5每年
+  int32 quota_num = 11; // 购买限制单数 -1不限制
+  string content = 12; // 商品详情
+  repeated CoSysVipRule rule = 13; // 商品规则
+  int32 sales = 14; // 总销量
+  int32 sort = 15; // 排序
+  int32 state = 16; // 状态 1 正常 2隐藏可通过推荐购买 3 下线
+  repeated CoTypeSimple type_info = 17; // 企业分类数组 - 附加
+}
+
+message CoSysVipRule {
+  string name = 1; // 标题名
+  string title = 2; // 副标题
+  int32 price_dot = 3; // 原价 分
+  int32 price = 4; // 现价 分
+  int32 sales = 5; // 销量
+  repeated CoSysVipList vip_list = 6;  // 关联的权限 列表
+}
+
+message CoSysVipList {
+  string label = 1; // VIP 权限标题
+  int32 type = 2; // 类型 1 企业组权限时长 2 插件权限时长 3 企业限制规则
+  int32 level = 3; // 类型 1 时为 会员等级 1~10
+  int64 limit_id = 4; // 根据类型决定 1 企业组ID 2 插件ID 3 限制规则ID
+  int32 limit_days = 5;  // 到期天数
+  int32 limit_value = 6; // 限制值 1、2不填 3 限制规则的值
+}
+
+message ReqCoSysVip {
+  PageInfo page = 1;
+  CoSysVip req = 2;
+}
+
+message ResCoSysVip {
+  repeated CoSysVip list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业系统操作控制部分
+service sys {
+  // TODO: Mongo 数据库部分-----------------------------------------
+  // TODO: 企业分类及类目
+  // 企业分类
+  rpc TypeList(CoType) returns (ResCoType) {} // 获取企业分类 不分页
+  rpc TypeData(CoType) returns (CoType) {} // 获取企业分类信息
+  rpc TypeSave(CoType) returns (CoType) {} // 添加修改企业分类
+  rpc TypeDelete(CoType) returns (Result) {} // 删除企业分类
+  // TODO: 企业绑定关系
+  // 绑定关系
+  rpc BindingPage(PageInfo) returns (ResCoSysBinding) {} // 获取管理菜单分页
+  rpc BindingData(CoSysBinding) returns (ResCoSysBinding) {} // 读取 企业绑定关系 数据
+  rpc BindingSave(CoSysBinding) returns (CoSysBinding) {} // 添加、修改 企业绑定关系
+  rpc BindingDelete(CoSysBinding) returns (Result) {} // 删除 企业绑定关系
+  // 绑定关系 VIP
+  rpc BindingVipList(CoSysBindingVip) returns (ResCoSysBindingVip) {} // 绑定关系VIP购买指定 列表
+  rpc BindingVipData(CoSysBindingVip) returns (CoSysBindingVip) {} // 获取绑定关系VIP购买指定数据
+  rpc BindingVipSave(CoSysBindingVip) returns (CoSysBindingVip) {} // 添加修改绑定关系VIP购买指定
+  rpc BindingVipDelete(CoSysBindingVip) returns (Result) {} // 删除绑定关系VIP购买指定
+  // TODO: 企业菜单权限管理
+  // 企业菜单
+  rpc MenuAll(ResultEmpty) returns (ResCoMenu) {} // 获取所有菜单
+  rpc MenuPage(ReqCoMenu) returns (ResCoMenu) {} // 获取管理菜单分页
+  rpc MenuData(CoMenu) returns (CoMenu) {} // 获取菜单信息
+  rpc MenuSave(CoMenu) returns (CoMenu) {} // 修改添加菜单
+  rpc MenuDelete(CoMenu) returns (Result) {} // 删除菜单
+  rpc MenuGroupLink(CoMenuGroup) returns (ResCoMenu) {} // 根据权限组获取相关菜单数据
+  // 企业菜单 API权限
+  rpc MenuApiPage(ReqCoMenuAPI) returns (ResCoMenuAPI) {} // 根据菜单读取所拥有的API列表
+  rpc MenuApiData(CoMenuAPI) returns (CoMenuAPI) {} // 获取菜单 API权限
+  rpc MenuApiSave(CoMenuAPI) returns (CoMenuAPI) {} // 修改添加菜单 API权限
+  rpc MenuApiDelete(CoMenuAPI) returns (Result) {} // 删除菜单 API权限
+  // 企业菜单 权限组
+  rpc MenuGroupPage(ReqCoMenuGroup) returns (ResCoMenuGroup) {} // 读取列表 权限组
+  rpc MenuGroupData(CoMenuGroup) returns (CoMenuGroup) {} // 获取菜单信息 权限组
+  rpc MenuGroupSave(CoMenuGroup) returns (CoMenuGroup) {} // 修改添加菜单 权限组
+  rpc MenuGroupDelete(CoMenuGroup) returns (Result) {} // 删除菜单 权限组
+  // 企业菜单权限组 限制规则
+  rpc MenuGroupLimitAll(CoMenuGroupLimit) returns (ResCoMenuGroupLimit) {} // 获取所有权限组限制规则
+  rpc MenuGroupLimitData(CoMenuGroupLimit) returns (CoMenuGroupLimit) {} // 获取权限组限制规则
+  rpc MenuGroupLimitSave(CoMenuGroupLimit) returns (CoMenuGroupLimit) {} // 修改添加权限组限制规则
+  rpc MenuGroupLimitDelete(CoMenuGroupLimit) returns (Result) {} // 删除权限组限制规则
+  //  企业菜单角色组
+  rpc MenuGroupRolePage(PageInfo) returns (ResCoMenuGroupRole) {} // 读取 菜单角色标签分页
+  rpc MenuGroupRoleSave(CoMenuGroupRole) returns (CoMenuGroupRole) {} // 修改添加菜单角色组
+  rpc MenuGroupRoleDelete(CoMenuGroupRole) returns (Result) {} // 删除菜单角色组
+  // TODO: 企业插件
+  // 企业插件
+  rpc PluginList(ResultEmpty) returns (ResCoSysPlugin) {} // 获取 所有正常有效的插件列表 用于插件服务器读取
+  rpc PluginPage(ReqCoSysPlugin) returns (ResCoSysPlugin) {} // 获取 企业插件 分页
+  rpc PluginData(CoSysPlugin) returns (CoSysPlugin) {} // 获取 企业插件 数据
+  rpc PluginSave(CoSysPlugin) returns (CoSysPlugin) {} // 添加、修改 企业插件
+  rpc PluginDelete(CoSysPlugin) returns (Result) {} // 删除 企业插件
+  rpc PluginGroupLink(CoMenuGroup) returns (ResCoSysPlugin) {} // 根据权限组获取相关插件数据
+  // TODO: 企业配置数据规则
+  rpc SettingPage(ReqCoSysSetting) returns (ResCoSysSetting) {} // 获取 配置数据规则 分页
+  rpc SettingData(CoSysSetting) returns (CoSysSetting) {} // 获取 配置数据规则 数据
+  rpc SettingSave(CoSysSetting) returns (Result) {} // 添加、修改 配置数据规则
+  rpc SettingDelete(CoSysSetting) returns (Result) {} // 删除 配置数据规则
+  // TODO: 企业会员权限商品管理
+  // 企业会员商品管理
+  rpc VipPage(ReqCoSysVip) returns (ResCoSysVip) {} // 读取企业VIP分页
+  rpc VipData(CoSysVip) returns (CoSysVip) {} // 获取企业VIP数据
+  rpc VipSave(CoSysVip) returns (Result) {} // 添加或修改企业VIP数据
+  rpc VipDelete(CoSysVip) returns (Result) {} // 删除企业VIP数据
+  // TODO: Mysql 数据库部分-----------------------------------------
+  // TODO: 企业权益模板
+  // 权益模板
+  rpc BenefitPage(ReqCoSysBenefit) returns (ResCoSysBenefit) {} // 获取权益模板分类
+  rpc BenefitData(CoSysBenefit) returns (CoSysBenefit) {} // 获取权益模板
+  rpc BenefitSave(CoSysBenefit) returns (CoSysBenefit) {} // 修改添加权益模板
+  rpc BenefitDelete(CoSysBenefit) returns (Result) {} // 删除权益模板
+  // 权益模板分类
+  rpc BenefitClassAll(ResultEmpty) returns (ResCoSysBenefitClass) {} // 获取权益模板所有分类
+  rpc BenefitClassData(CoSysBenefitClass) returns (CoSysBenefitClass) {} // 获取权益模板分类数据
+  rpc BenefitClassSave(CoSysBenefitClass) returns (CoSysBenefitClass) {} // 修改添加权益模板分类
+  rpc BenefitClassDelete(CoSysBenefitClass) returns (Result) {} // 删除权益模板分类
+  // TODO: 企业组件
+  // 企业组件
+  rpc ModulePage(ReqCoSysModule) returns (ResCoSysModule) {} // 读取 企业组件 分页
+  rpc ModuleData(CoSysModule) returns (CoSysModule) {} // 读取 企业组件 数据
+  rpc ModuleSave(CoSysModule) returns (CoSysModule) {} // 添加、修改 企业组件
+  rpc ModuleDelete(CoSysModule) returns (Result) {} // 删除 企业组件
+  // 企业组件分类
+  rpc ModuleClassPage(PageInfo) returns (ResCoSysModuleClass) {} // 读取 企业组件分类 分页
+  rpc ModuleClassData(CoSysModuleClass) returns (CoSysModuleClass) {} // 读取 企业组件分类 数据
+  rpc ModuleClassSave(CoSysModuleClass) returns (CoSysModuleClass) {} // 修改、添加 企业组件分类
+  rpc ModuleClassDelete(CoSysModuleClass) returns (Result) {} // 删除 企业组件分类
+  // TODO: 企业限制规则
+  // 企业限制规则
+  rpc LimitPage(ReqCoSysLimit) returns (ResCoSysLimit) {} // 获取 企业限制规则 分页
+  rpc LimitData(CoSysLimit) returns (CoSysLimit) {} // 获取 企业限制规则 数据
+  rpc LimitSave(CoSysLimit) returns (CoSysLimit) {} // 添加、修改 企业限制规则
+  rpc LimitDelete(CoSysLimit) returns (Result) {} // 删除 企业限制规则
+  // TODO: 企业限制规则 企业使用数据未开发
+  // CoSysLimitList 后期继续
+}
+
+/**
+------------------------------
+TODO: 用户获取操作部分
+------------------------------
+ */
+// ID
+message Uid {
+  int64 uid = 1; // 用户ID
+  int64 coid = 2; // 企业ID
+}
+
+message IdCoId {
+  int64 id = 1; // ID
+  int64 coid = 2; // 企业ID
+}
+
+// 权限检查
+message Permissions {
+  int64 coid = 1;
+  int64 uid = 2;
+  string path = 3;
+  string method = 4;
+}
+
+// TODO: 企业用户信息
+// 企业信息 - 用户拥有的企业列表 TODO: 附加
+message User_CoUser {
+  int64 id = 1; // 企业ID
+  string name = 2; // 企业名称
+  repeated string type_class_name = 3; // 企业所属类目 名称 TODO: 集合
+  string logo = 4; // 企业LOGO
+  int32 cert_type = 5; // 主体认证状态 1未认证 2已认证
+  int32 state = 6; // 状态 1 正常 2异常 3停用
+}
+
+message Res_User_CoUser {
+  repeated User_CoUser list = 1;
+}
+
+// co_user 企业信息
+message CoUser {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  string name = 4; // 企业名称
+  repeated int64 type_id = 5; // 企业所属类型ID
+  string logo = 6; // 企业LOGO
+  int32 cert_type = 7; // 主体认证状态 1未认证 2已认证
+  int32 chain = 8; // 连锁点模式 1关闭 2主店 3子店
+  int32 province = 9; // 所在省
+  int32 city = 10; // 所在市
+  int32 county = 11; // 所在县
+  int32 state = 12; // 状态 1 正常 2异常 3停用
+}
+
+message ReqCoUser {
+  PageInfo page = 1;
+  CoUser req = 2;
+}
+
+message ResCoUser {
+  repeated CoUser list = 1;
+  int32 count = 2;
+}
+
+// co_user_data 企业详细资料
+message CoUserData {
+  int64 id = 1; // 企业ID
+  repeated double loc = 12;  // 地址位置坐标 维度、经度
+  string address = 3;  // 企业所在地址
+  int64 cert_id = 4;  // 主体认证信息关联ID
+  int32 chain_max = 5;  // 最大可关联连锁店数
+  string phone = 6;  // 联系电话
+  string qq = 7;  // 联系QQ
+  string we_chat = 8;  // 联系微信
+  string intro = 9;  // 企业简介
+  int64 created_uid = 10;  // 创建用户 ID
+}
+
+// 更新企业联系我们信息 请求
+message ReqUserContactData {
+  CoUser user = 1;
+  CoUserData data = 2;
+}
+
+// TODO: 企业用户地址库
+// co_user_address
+message CoUserAddress {
+  int64 id = 1; // 企业用户地址库
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 coid = 4; // 企业ID
+  string name = 5;  // 联系人
+  string phone = 6;  // 联系方式
+  int32 province = 7;  // 所在省
+  int32 city = 8;  // 所在市
+  int32 county = 9;  // 所在县
+  string address = 10;  // 详细地址
+  message Link {// TODO: 集合 co_user_address_link
+    int64 address_id = 1;
+    int32 type = 2; // 地址类型 1退货地址 2收票地址 3发货地址
+    int32 default = 3; // 是否默认 2默认
+  }
+  repeated Link link = 11;
+}
+
+message ReqCoUserAddress {
+  PageInfo page = 1;
+  CoUserAddress req = 2;
+}
+
+message ResCoUserAddress {
+  repeated CoUserAddress list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 企业权益部分
+// co_user_benefit
+message CoUserBenefit {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  string name = 5; // 权益名称
+  string color_code = 6; // 背景设置-背景色
+  string cover_url = 7; // 背景设置-背景图
+  int32 claim_type = 8; // 领取设置 1可直接领取 2满足条件领取 3需付费购买
+  double price = 11; // 购买价格
+  int32 stock_num = 12; // 库存数量
+  int32 term_type = 13; // 有效期 1永久有效 2领卡后指定天生效 3指定日期
+  int64 term_days = 14; // 指定生效天数
+  int64 term_begin_at = 15; // 指定生效时间
+  int64 term_end_at = 16; // 指定失效时间
+  int32 is_repeatable = 17; // 不限次数
+  int32 repeatable_limit = 18; // 有效期内限领次数
+  int32 require_mobile = 19; // 验证手机号
+  int32 require_profile = 20; // 完善信息
+  string goods_no = 21; // 商品编码
+  string service_phone = 22; // 客服电话
+  string description = 23; // 使用须知
+  int32 state = 24; // 状态 1正常 2下架 3禁用
+}
+
+// 企业权益卡保存
+message SaveCoUserBenefit {
+  CoUserBenefit info = 1;
+  message MeetBag {
+    int64 meet_type = 1; // 满足领取条件类型 1累计支付成功 2累计消费金额 3累计总积分为
+    int32 meet_value = 2;  // 满足条件值
+  }
+  repeated MeetBag meet_bag = 2;
+  bytes benefit_bag = 3;
+}
+
+message ReqCoUserBenefit {
+  PageInfo page = 1;
+  CoUserBenefit req = 2;
+}
+
+message ResCoUserBenefit {
+  repeated CoUserBenefit list = 1;
+  int32 count = 2;
+}
+
+// co_user_benefit_diy
+message CoUserBenefitDiy {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  int64 benefit_id = 5; // 权益模板ID
+  int32 type = 6; // 权益类型 1权益 2礼包
+  int32 mode = 7; // 服务模式 1系统核单 2商户线下核单
+  string name = 8; // 展示名称
+  string icon = 9; // 权益图标
+  string description = 10; // 权益简介
+  int32 use_state = 11; // 使用状态
+  CoSysBenefit benefit_info = 12; // 使用的权益模板信息
+}
+
+message ReqCoUserBenefitDiy {
+  PageInfo page = 1;
+  CoUserBenefitDiy req = 2;
+}
+
+message ResCoUserBenefitDiy {
+  bytes list = 1;
+  int32 count = 2;
+}
+
+// 企业拥有的权益列表
+message ResUserBenefitOwn {
+  message List {
+    int64 id = 1; // ID
+    string name = 2; // 权益分类名称
+    repeated CoSysBenefit list = 3; //企业权益数据
+  }
+  repeated List list = 1;
+  message UseList {
+    int64 id = 1; // ID
+    int64 benefit_id = 2; // 权益分类名称
+    int32 use_state = 3; //使用状态
+  }
+  repeated UseList use_list = 2;
+}
+
+// TODO: 企业证书材料及申请
+// co_user_cert
+message CoUserCert {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  repeated int64 type_id = 4; // 企业申请分类ID
+  int32 type = 5; // 类型 1企业 2个体户 3政府及事业单位 4其他组织 5个人
+  int64 uid = 6; // 申请人UID
+  string name = 7; // 企业名称
+  int64 region_id = 8; // 所在地区编号
+  int32 chain = 9; // 是否为连锁店模式
+  string card_id = 10; // 证件号 身份证、三证/五证合一营业执照
+  string card_pros = 11; // 证件图片1 正面
+  string card_cons = 12; // 证件图片2 反面
+  string msg = 13; // 管理员处理信息
+  int32 state = 14; // 1 正常 2申请中 3申请失败
+}
+
+message ReqCoUserCert {
+  PageInfo page = 1;
+  CoUserCert req = 2;
+}
+
+message ResCoUserCert {
+  repeated CoUserCert list = 1;
+  int32 count = 2;
+}
+
+// TODO: 连锁店关联 到期解除绑定关系
+// co_user_chain
+message CoUserChain {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 主店企业ID
+  int64 sonid = 5; // 绑定子店ID
+  int32 state = 6; // 1 正常 2邀请中 3暂停
+}
+
+message ReqCoUserChain {
+  PageInfo page = 1;
+  CoUserChain req = 2;
+}
+
+message ResCoUserChain {
+  repeated CoUserChain list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 拥有的角色列表
+// co_user_group_role
+message CoUserGroupRole {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 coid = 4; // 企业ID
+  string name = 5; // 角色名称
+  string tips = 6; // 角色描述
+  int32 role_type = 7; // 角色类型 1系统 2用户自定义 TODO: 附加
+  int32 staff_count = 8; // 员工数量  TODO: 附加
+  repeated int64 menu_id = 9; // 拥有的菜单JSON数据 TODO: 转换
+}
+
+message ReqCoUserGroupRole {
+  PageInfo page = 1;
+  int32 is_sys = 2;
+  CoUserGroupRole req = 3;
+}
+
+message ResCoUserGroupRole {
+  repeated CoUserGroupRole list = 1;
+  int32 count = 2;
+}
+
+// TODO: 拥有的用户绑定关系
+// co_user_customer
+message CoUserCustomer {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  int64 uid = 5; // 关联用户ID
+  int64 sort = 6; // 显示排序
+  int64 points = 7; // 用户积分
+  int64 points_all = 8; // 累计发放积分
+}
+
+message ReqCoUserCustomer {
+  PageInfo page = 1;
+  CoUserCustomer req = 2;
+}
+
+message ResCoUserCustomer {
+  repeated CoUserCustomer list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 购买订单
+// co_user_order
+message CoUserOrder {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  int32 type = 5; // 类型
+  int64 aid = 6; // 关联商品ID
+  double price = 7; // 需支付价格
+  int32 state = 8; // 状态 1待支付 2取消 3已支付 4已完成
+  int64 pay_time = 9; // 支付时间
+}
+
+message ReqCoUserOrder {
+  PageInfo page = 1;
+  CoUserOrder req = 2;
+}
+
+message ResCoUserOrder {
+  repeated CoUserOrder list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 积分及规则设置
+// co_user_points
+message CoUserPoints {
+  int64 coid = 1; // 企业ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  string name = 5; // 积分自定义名称
+  int32 limit_per_day = 6; // 积分获取上限 -1 不限制
+  int32 protected_time = 7; // 积分保护期 -1不启用 单位天
+  int32 general_ratio = 8; // 积分兑换比例 ?积分=1元
+  CoUserPointsDeduct deduct = 9; //积分抵现规则
+  CoUserPointsExpireDetail expire_detail = 10; // 积分到期规则
+}
+message CoUserPointsDeduct {
+  int32 deduct_amount_limit = 1; // 订单金额门槛 -1 不限制 订单最低为?元可抵现 单位分
+  int32 min_order_amount = 2; // 抵现金额上限 -1 不限制 每笔订单最多抵扣?元 单位分
+}
+
+message CoUserPointsExpireDetail {
+  int32 expire_type = 1; // 到期类型 1永久有效 2从获得开始 3每笔积分有效期
+  string time_period = 2; // 2 指定失效日期 0101 1月1日
+  int32 time_day = 3; // 3 有效期天 一年365天
+}
+
+// co_user_points_rule
+message CoUserPointsRule {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  int64 points = 5; // 奖励分值
+  int32 rule_type = 6; // 规则类型 1 关注我的微信 2每成功交易 3每购买金额
+  int64 points_limit = 7; // 规则限制 2 每成功交易(笔) 3每购买金额(元)
+  bool send_message = 8; // 通知设置 1不通知 2通知
+  int64 bonus_points = 9; // 已奖励积分数
+}
+
+message ReqCoUserPointsRule {
+  PageInfo page = 1;
+  int64 coid = 2; // 企业ID
+}
+
+message ResCoUserPointsRule {
+  repeated CoUserPointsRule list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 员工管理
+// co_user_staff
+message CoUserStaff {
+  int64 id = 1;
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 coid = 4;
+  int64 uid = 5;
+  string staff_no = 6; // 员工编号
+  string real_name = 7; // 员工姓名
+  string phone = 8; // 员工联系电话
+  int32 sort = 9; // 显示排序
+  repeated CoUserStaffGroup group = 10; // 拥有的角色组数据
+}
+
+// co_user_staff_group
+message CoUserStaffGroup {
+  int32 role_type = 1;  // 角色组类型 1系统 2用户自定义
+  int64 role_id = 2; // 角色组关联ID
+  string role_name = 3; // 角色组名称  TODO: 附加调用
+}
+
+message ReqCoUserStaff {
+  PageInfo page = 1;
+  CoUserStaff req = 2;
+}
+
+message ResCoUserStaff {
+  repeated CoUserStaff list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 门店管理
+// co_user_store
+message CoUserStore {
+  int64 id = 1; // 企业用户门店管理
+  int32 created_at = 2;
+  int32 updated_at = 3;
+  int64 coid = 4; // 企业ID
+  string name = 5;  // 门店名称
+  string phone = 6;  // 联系电话
+  repeated string pic = 7;  // 门店照片 JSON数组对应图片ID
+  int32 province = 8;  // 所在省
+  int32 city = 9;  // 所在市
+  int32 county = 10;  // 所在县
+  string address = 11;  // 详细地址
+  repeated double loc = 12;  // 地址位置坐标 维度、经度
+  string description = 13;  // 商家推荐介绍
+  int32 business_type = 14;  // 营业时间 1全天 2每天重复 3每周重复
+  bytes business_time = 15;  // 营业不为全天 储存的时间规则JSON
+}
+
+message ReqCoUserStore {
+  PageInfo page = 1;
+  CoUserStore req = 2;
+}
+
+message ResCoUserStore {
+  repeated CoUserStore list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 企业配置数据读取及修改
+// 企业用户 读取配置
+message CoUserSetting {
+  int64 id = 1;
+  int64 coid = 2; // 企业ID
+  int64 menu_id = 3;  // 企业积分规则ID 企业ID
+  map<int64, bytes> rule_data = 4;  // 配置数据规则
+}
+
+// 企业用户保存配置
+message SaveCoUserSetting {
+  int64 id = 1;
+  int64 coid = 2; // 企业ID
+  bytes setting_data = 3; // 值数据
+}
+
+message ResCoUserSettingValue {
+  int64 coid = 2; // 企业ID
+  repeated int64 setting_id = 1;
+}
+
+// TODO: 企业用户 VIP开通权限
+// co_user_vip
+message CoUserVip {
+  int64 id = 1; // ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 所属企业ID
+  int32 type = 5;  // 类型 1 企业组权限时长 2 插件权限时长 3 企业限制规则时长
+  int32 pay_type = 6;  // 购买方式 1系统赠送 2购买
+  int64 limit_id = 7; // 根据类型决定 1 企业组ID 2 插件ID 3 限制规则ID
+  int32 limit_value = 8;  // 限制值 1 会员等级 1~10 2不填 3 限制规则的值
+  int64 due_date = 9;  // 到期时间
+}
+
+message ReqCoUserVip {
+  PageInfo page = 1;
+  CoUserVip req = 2;
+}
+
+message ResCoUserVip {
+  repeated CoUserVip list = 1;
+  int32 count = 2;
+}
+
+// TODO: 企业用户 企业VIP商品
+message ReqCoSysVipChoose {
+  int64 coid = 1; // 企业ID
+  int32 type = 2;
+  int64 menu_id = 3;
+}
+
+// TODO: 企业用户 企业装饰
+message ReqCoUserDecoFeature {
+  int64 coid = 1; // 所属企业ID
+  int32 tpl_type = 2; // 模板类型 1企业页面 2模板市场页面
+  int64 tpl_id = 3; // 页面ID
+}
+
+message ReqCoUserDecoUsePos {
+  int64 coid = 1; // 企业ID
+  int64 use_pos = 2; // 使用位置 -1 任意页面可调用 1微页面 2主页 3分类页 10导航条 11个人中心 12悬浮窗 13公共广告 ...
+}
+
+message ReqCoUserDecoOperate {
+  int64 coid = 1; // 企业ID
+  int32 type = 2; // 操作方式 1 设为主页 2 复制 3删除 4改变分类
+  int64 feature_id = 3; // 1、2、3 页面ID  4分类页面ID
+  repeated int64 feature_list = 4; // 匹配改分类 要操作的页面数组
+}
+
+// 企业页面
+message CoUserFeature {
+  int64 id = 1; // 页面ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  string name = 5; // 标题
+  int32 platform = 6; // 平台标识ID -1通用 1 H5 2 WEB 3 APP 4 微信公众号 5 微信小程序 6 支付宝 7 字节跳动
+  int32 source = 7; // 来源 1 H5 2 WEB 3 APP 4 微信公众号 5 微信小程序 6 支付宝 7 字节跳动
+  bool is_delete = 8; // 是否可删除
+  int32 page_type = 9; //  页面类型 1微页面 2主页 3分类页
+  int32 state = 10; // 状态 1正常 2草稿箱
+  int32 operate_type = 11; //  操作类型 1 保存并继续 2 保存至草稿箱 3保存并上架
+  bytes components = 12; // 页面使用的组件数据
+}
+
+// 企业拥有的权益列表
+message ResCoUserDecoModuleList {
+  message List {
+    int64 id = 1; // ID
+    string name = 2; // 权益分类名称
+    message CoSysModule {
+      int64 id = 1; // ID
+      string name = 6; // 组件名称
+      string icon = 7; // 组件图标
+      string alias = 8; // 组件模型标签
+      int32 max_num = 9; // 每页面最多可使用次数
+      bool is_sort = 10; // 是否支持排序
+      int32 fix_sort = 11; // 固定排序位置 序号 0~?
+      bool is_delete = 12; // 是否支持删除
+      bool is_config = 13; // 是否支持功能设置
+      int32 state = 14; // 状态 1正常 2下线 3开发中 4未开通权限
+    }
+    repeated CoSysModule list = 3; //企业权益数据
+  }
+  repeated List list = 1;
+}
+
+// 企业装饰 公共模板
+message CoUserShopCommon {
+  int64 id = 1; // 公共页面ID
+  int32 created_at = 2; // 创建时间
+  int32 updated_at = 3; // 更新时间
+  int64 coid = 4; // 企业ID
+  int32 page_type = 7; // 全局配置类型  10导航条 11个人中心 11悬浮窗 12公共广告
+  int32 platform = 6; // 使用平台标识ID -1通用 1 H5 2 WEB 3 APP 4 微信公众号 5 微信小程序 6 支付宝 7 字节跳动
+  bytes components = 12; // 页面使用的组件数据
+}
+
+// 企业装饰 改变全局样式
+message ReqCoUserDecoStyle {
+  int64 coid = 1; // 企业ID
+  string style = 2; // 样式名称
+}
+
+// 初始化企业页面
+message CoUserShopInit {
+  int64 coid = 1; // 企业ID
+  int32 type = 2; // 初始化操作页面类型 1 普通页面 2全局配置 普通页面(1微页面 2主页 3分类页) 全局配置(10导航条 11个人中心 12悬浮窗 13公共广告)
+  repeated CoUserFeature shop_feature = 3; // 企业页面
+  repeated CoUserShopCommon shop_common = 4; // 公共模板
+}
+
+// 企业页面读取
+message CoFeatureConfig {
+  int64 coid = 1; // 企业ID
+  int32 page_type = 2; // 页面类型  1微页面 2主页 3分类页 10导航条 11个人中心 12悬浮窗 13公共广告
+  int64 feature_id = 3; // 页面ID
+  int32 source = 4; // 来源 1 H5 2 WEB 3 APP 4 微信公众号 5 微信小程序 6 支付宝 7 字节跳动
+}
+
+service user {
+  // TODO: 权限检查
+  rpc PermissionsByRequest(Permissions) returns (Result) {}
+  // TODO: 企业用户信息
+  // 组合个性自定义读取
+  rpc CoAdminList(ReqId) returns (Res_User_CoUser) {} // 读取用户所拥有的可管理的企业列表
+  rpc CoCustomerList(ReqId) returns (Res_User_CoUser) {} // 读取用户所加入的企业列表
+  rpc CoUserRoles(Uid) returns (ResCoMenu) {} // 读取用户拥有的企业菜单路由权限
+  // 企业管理
+  rpc UserPage(ReqCoUser) returns (ResCoUser) {}  // 获取企业分页
+  rpc UserGet(ReqId) returns (CoUser) {} // 获取企业基础信息
+  rpc UserUp(CoUser) returns (CoUser) {} // 获取企业所有基础信息
+  rpc UserDelete(CoUser) returns (Result) {} // 删除企业用户
+  // 用户详细资料管理
+  rpc UserDataGet(CoUserData) returns (CoUserData) {} // 获取企业详细资料
+  rpc UserDataUp(CoUserData) returns (CoUserData) {} // 更新企业详细资料
+  rpc UserInfoGet(Uid) returns (Result) {} // 获取企业所有基础信息
+  rpc UserContactUp(ReqUserContactData) returns (Result) {} // 更新企业联系我们信息
+  // TODO: 企业用户地址库
+  // 企业用户地址库
+  rpc UserAddressPage(ReqCoUserAddress) returns (ResCoUserAddress) {}
+  rpc UserAddressData(CoUserAddress) returns (CoUserAddress) {}
+  rpc UserAddressSave(CoUserAddress) returns (CoUserAddress) {}
+  rpc UserAddressDelete(CoUserAddress) returns (Result) {}
+  // TODO: 企业证书材料及申请 未开发
+  // rpc UserCertPage(ReqCoUserCert) returns (ResCoUserCert) {} //读取 企业申请 分页
+  // rpc UserCertData(CoUserCert) returns (CoUserCert) {} // 读取 企业申请 数据
+  // rpc UserCertSave(CoUserCert) returns (CoUserCert) {} // 添加、修改 企业申请
+  // rpc UserCertDelete(CoUserCert) returns (Result) {} // 删除 企业申请
+  // TODO: 连锁店关联 到期解除绑定关系 未开发
+  rpc UserChainPage(ReqCoUserChain) returns (ResCoUserChain) {} //读取 企业申请 分页
+  rpc UserChainData(CoUserChain) returns (CoUserChain) {} // 读取 企业申请 数据
+  rpc UserChainSave(CoUserChain) returns (CoUserChain) {} // 添加、修改 企业申请
+  rpc UserChainDelete(CoUserChain) returns (Result) {} // 删除 企业申请
+  // TODO: 企业用户 拥有的角色列表
+  // 企业角色组
+  rpc UserMenuAll(Uid) returns (ResCoMenu) {} //获取企业拥有的所有菜单
+  rpc UserGroupRolePage(ReqCoUserGroupRole) returns (ResCoUserGroupRole) {} //获取企业拥有的角色列表数据分页
+  rpc UserGroupRoleData(CoUserGroupRole) returns (CoUserGroupRole) {} // 获取企业角色组数据
+  rpc UserGroupRoleSave(CoUserGroupRole) returns (CoUserGroupRole) {} // 添加、更新 用户到企业自定义角色组
+  rpc UserGroupRoleDelete(CoUserGroupRole) returns (Result) {} // 删除企业自定义角色组
+  // TODO: 拥有的用户绑定关系
+  // 企业用户关联
+  rpc UserCustomerPage(ReqCoUserCustomer) returns (ResCoUserCustomer) {} // 获取企业拥有的用户分页
+  rpc UserCustomerData(CoUserCustomer) returns (CoUserCustomer) {} // 获取企业用户数据
+  rpc UserCustomerSave(CoUserCustomer) returns (CoUserCustomer) {} // 添加、更新 企业用户
+  rpc UserCustomerDelete(CoUserCustomer) returns (Result) {} // 删除企业关联用户
+  // TODO: 企业用户 购买订单
+  // 企业购买订单
+  rpc UserOrderPage(ReqCoUserOrder) returns (ResCoUserOrder) {} //读取企业购买订单分页
+  rpc UserOrderData(CoUserOrder) returns (CoUserOrder) {} //获取企业购买订单数据
+  rpc UserOrderUp(CoUserOrder) returns (CoUserOrder) {} //更新 企业购买订单
+  rpc UserOrderDelete(CoUserOrder) returns (Result) {} //删除企业购买订单
+  // TODO: 企业用户 积分及规则设置
+  // 企业积分规则设置
+  rpc UserPointsSetInfo(CoUserPoints) returns (CoUserPoints) {} //获取企业积分规则数据
+  rpc UserPointsSetUpdate(CoUserPoints) returns (CoUserPoints) {} //更新 企业积分规则数据
+  // 企业积分 积分获取规则
+  rpc UserPointsRuleList(ReqCoUserPointsRule) returns (ResCoUserPointsRule) {}
+  rpc UserPointsRuleData(CoUserPointsRule) returns (CoUserPointsRule) {}
+  rpc UserPointsRuleSave(CoUserPointsRule) returns (CoUserPointsRule) {}
+  rpc UserPointsRuleDelete(CoUserPointsRule) returns (Result) {}
+  // TODO: 企业用户 企业权益部分
+  // 企业自定义权益
+  rpc UserBenefitOwn(Uid) returns (ResUserBenefitOwn) {} // 获取企业拥有的权益列表
+  rpc UserBenefitDiyPage(ReqCoUserBenefitDiy) returns (ResCoUserBenefitDiy) {}
+  rpc UserBenefitDiyData(CoUserBenefitDiy) returns (CoUserBenefitDiy) {}
+  rpc UserBenefitDiySave(CoUserBenefitDiy) returns (CoUserBenefitDiy) {}
+  rpc UserBenefitDiyDelete(CoUserBenefitDiy) returns (Result) {}
+  // 企业权益列表
+  rpc UserBenefitPage(ReqCoUserBenefit) returns (Result) {} // 读取企业权益列表分页
+  rpc UserBenefitData(CoUserBenefit) returns (Result) {} // 获取企业权益列表数据
+  rpc UserBenefitSave(SaveCoUserBenefit) returns (Result) {} // 添加、更新 企业权益列表
+  rpc UserBenefitDelete(CoUserBenefit) returns (Result) {} // 删除企业权益列表
+  // TODO: 企业用户 员工管理
+  // 企业员工
+  rpc UserStaffPage(ReqCoUserStaff) returns (ResCoUserStaff) {} // 获取企业拥有的员工分页
+  rpc UserStaffData(CoUserStaff) returns (CoUserStaff) {} // 获取企业员工数据
+  rpc UserStaffSave(CoUserStaff) returns (CoUserStaff) {} // 添加、更新企业员工
+  rpc UserStaffDelete(CoUserStaff) returns (Result) {} // 删除企业员工
+  // TODO: 企业用户 门店管理
+  // 企业用户门店管理
+  rpc UserStorePage(ReqCoUserStore) returns (ResCoUserStore) {}
+  rpc UserStoreData(CoUserStore) returns (CoUserStore) {}
+  rpc UserStoreSave(CoUserStore) returns (CoUserStore) {}
+  rpc UserStoreDelete(CoUserStore) returns (Result) {}
+  // TODO: 企业用户 企业配置数据读取及修改
+  // 企业用户 组件、配置设置值
+  rpc UserSettingInfo(CoUserSetting) returns (Result) {}
+  rpc UserSettingSave(SaveCoUserSetting) returns (Result) {}
+  rpc UserSettingValue(ResCoUserSettingValue) returns (Result) {} // 根据别名读取企业配置
+  // TODO: 企业用户 企业装饰
+  rpc UserDecoFeature(ReqCoUserDecoFeature) returns (Result) {} // 获取企业装饰页面数据
+  rpc DecoModuleList(ReqCoUserDecoUsePos) returns (ResCoUserDecoModuleList) {} // 获取企业组件列表
+  rpc DecoModuleInfo(IdCoId) returns (Result) {} // 获取企业组件详细数据
+  rpc DecoModuleData(CoUserFeature) returns (Result) {} // 获取企业组件内插件API数据
+  rpc DecoSave(CoUserFeature) returns (CoUserFeature) {} // 添加修改企业装饰页面数据
+  rpc DecoOperate(ReqCoUserDecoOperate) returns (Result) {} // 操作企业装饰页面
+  // 公共页面
+  rpc DecoStyle(ReqCoUserDecoStyle) returns (Result) {} // 更改全站配色风格
+  rpc DecoShopCommonInfo(CoUserShopCommon) returns (Result) {} // 获取企业公共页面数据
+  rpc DecoShopCommonSave(CoUserShopCommon) returns (Result) {} // 更改企业公共页面
+  // 初始化企业页面
+  rpc DecoShopPageInit(CoUserShopInit) returns (Result) {} // 初始化创建企业页面
+  // TODO: 企业页面用户读取 ----
+  rpc FeatureConfig(CoFeatureConfig) returns (Result) {} // 企业页面配置 读取
+  rpc FeatureData(CoFeatureConfig) returns (Result) {} // 企业页面数据 读取
+  // TODO: 企业用户 VIP开通权限
+  // 企业用户拥有的VIP
+  rpc UserVipPage(ReqCoUserVip) returns (ResCoUserVip) {}
+  rpc UserVipData(CoUserVip) returns (CoUserVip) {}
+  rpc UserVipSave(CoUserVip) returns (CoUserVip) {}
+  rpc UserVipDelete(CoUserVip) returns (Result) {}
+  // 企业VIP 操作
+  rpc SubscribeChoose(ReqCoSysVipChoose) returns (ResCoSysVip) {} // 根据菜单ID 获取相关的VIP购买列表
+  rpc SubscribeItemId(IdCoId) returns (Result) {} // 读取企业VIP 购买商品内容
+  rpc SubscribeVipPage(ReqCoUserVip) returns (Result) {} // 读取企业VIP 权限列表
+}

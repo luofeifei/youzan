@@ -1,0 +1,217 @@
+runtime error: integer divide by zero
+
+current running goroutine num: 17
+
+goroutine 606 [running]:
+github.com/TarsCloud/TarsGo/tars/util/debug.DumpStack(0x247e201, 0x1c7ab07, 0x5, 0xc0000e0000, 0x25)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/util/debug/debugtool.go:43 +0xa5
+github.com/TarsCloud/TarsGo/tars.CheckPanic()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/panic.go:20 +0xb4
+panic(0x1b50ae0, 0x247e2a0)
+	/usr/local/go/src/runtime/panic.go:969 +0x175
+base/server/pkg/database/orm.Slave(...)
+	/Users/rogerluo/go/src/dev/base/server/pkg/database/orm/orm.go:99
+base/server/pkg/database/orm.FirstByID(0x0, 0x0, 0x1b6ac40, 0xc0000de000, 0x71323b, 0x0, 0x0, 0x0)
+	/Users/rogerluo/go/src/dev/base/server/pkg/database/orm/common.go:85 +0x454
+server/service.GoodsDetail(0x0, 0x0, 0x71323b, 0x4, 0x71323b, 0x4, 0xc0001dffc0, 0x14ea3a3, 0xc0000369b9, 0x4, ...)
+	/Users/rogerluo/go/src/dev/cmd/kf001/serverShop/service/shop_group.go:446 +0x9e
+server/handler.(*ShopSysImp).GoodsDetail(0x24c9e98, 0x1ea4740, 0xc00059c330, 0x71323b, 0x0, 0x0, 0x0, 0x0, 0x35203a657a69735f, 0x695f6e696d20200a, ...)
+	/Users/rogerluo/go/src/dev/cmd/kf001/serverShop/handler/shopSys.go:224 +0xf0
+base/model/imp/serverShop.(*ShopSys).Dispatch(0xc000444690, 0x1ea4740, 0xc00059c330, 0x1c4e6a0, 0x24c9e98, 0xc00008eea0, 0xc0000e68c0, 0x100f801, 0x0, 0x0)
+	/Users/rogerluo/go/src/dev/model/imp/serverShop/serverShop_sys.pb.go:5450 +0x1375
+github.com/TarsCloud/TarsGo/tars.(*TarsProtocol).Invoke(0xc00039e4e0, 0x1ea4740, 0xc00059c330, 0xc00003c400, 0x3f, 0x3f, 0x0, 0x0, 0x0)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/tarsprotocol.go:87 +0x4b4
+github.com/TarsCloud/TarsGo/tars/transport.(*TarsServer).invoke(0xc00013e000, 0x1ea4740, 0xc00059c330, 0xc00003c400, 0x3f, 0x3f, 0xc0004da0e0, 0x2, 0x2)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tarsserver.go:121 +0xc4
+github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).handleConn.func1()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:71 +0x305
+created by github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).handleConn
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:92 +0xc6
+
+goroutine 1 [select]:
+github.com/TarsCloud/TarsGo/tars.mainloop()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:474 +0x2ab
+github.com/TarsCloud/TarsGo/tars.Run()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:318 +0x2c7
+main.main()
+	/Users/rogerluo/go/src/dev/cmd/kf001/serverShop/main.go:28 +0xf5
+
+goroutine 6 [chan receive]:
+github.com/TarsCloud/TarsGo/tars/util/gtime.init.0.func1()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/util/gtime/gtime.go:25 +0x85
+created by github.com/TarsCloud/TarsGo/tars/util/gtime.init.0
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/util/gtime/gtime.go:19 +0x19e
+
+goroutine 7 [select, 6 minutes]:
+github.com/TarsCloud/TarsGo/tars/util/rogger.flushLog()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/util/rogger/logger.go:318 +0x126
+created by github.com/TarsCloud/TarsGo/tars/util/rogger.init.0
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/util/rogger/logger.go:58 +0x35
+
+goroutine 35 [semacquire, 6 minutes]:
+sync.runtime_Semacquire(0xc0000369e8)
+	/usr/local/go/src/runtime/sema.go:56 +0x45
+sync.(*WaitGroup).Wait(0xc0000369e0)
+	/usr/local/go/src/sync/waitgroup.go:130 +0x65
+github.com/spf13/viper.(*Viper).WatchConfig.func1(0xc0004e86c0, 0xc000036970)
+	/Users/rogerluo/go/pkg/mod/github.com/spf13/viper@v1.7.1/viper.go:404 +0x336
+created by github.com/spf13/viper.(*Viper).WatchConfig
+	/Users/rogerluo/go/pkg/mod/github.com/spf13/viper@v1.7.1/viper.go:343 +0x79
+
+goroutine 36 [syscall]:
+syscall.syscall6(0x15ae280, 0x16, 0x0, 0x0, 0xc0001e9e88, 0xa, 0x24ca100, 0x0, 0x0, 0x0)
+	/usr/local/go/src/runtime/sys_darwin.go:85 +0x2e
+golang.org/x/sys/unix.kevent(0x16, 0x0, 0x0, 0xc0001e9e88, 0xa, 0x24ca100, 0x0, 0x0, 0x0)
+	/Users/rogerluo/go/pkg/mod/golang.org/x/sys@v0.0.0-20200323222414-85ca7c5b95cd/unix/zsyscall_darwin_amd64.go:292 +0xa6
+golang.org/x/sys/unix.Kevent(0x16, 0x0, 0x0, 0x0, 0xc0001e9e88, 0xa, 0xa, 0x24ca100, 0x0, 0x0, ...)
+	/Users/rogerluo/go/pkg/mod/golang.org/x/sys@v0.0.0-20200323222414-85ca7c5b95cd/unix/syscall_bsd.go:413 +0x71
+github.com/fsnotify/fsnotify.read(0x16, 0xc0001e9e88, 0xa, 0xa, 0x24ca100, 0xc0001e9e88, 0x0, 0xa, 0x0, 0x0)
+	/Users/rogerluo/go/pkg/mod/github.com/fsnotify/fsnotify@v1.4.7/kqueue.go:511 +0x6e
+github.com/fsnotify/fsnotify.(*Watcher).readEvents(0xc0001823c0)
+	/Users/rogerluo/go/pkg/mod/github.com/fsnotify/fsnotify@v1.4.7/kqueue.go:274 +0x831
+created by github.com/fsnotify/fsnotify.NewWatcher
+	/Users/rogerluo/go/pkg/mod/github.com/fsnotify/fsnotify@v1.4.7/kqueue.go:62 +0x199
+
+goroutine 37 [select, 6 minutes]:
+github.com/spf13/viper.(*Viper).WatchConfig.func1.1(0xc0001823c0, 0xc0000369e0, 0xc0000341e0, 0x24, 0xc0000341e0, 0x24, 0xc000197700, 0xc0004e86c0)
+	/Users/rogerluo/go/pkg/mod/github.com/spf13/viper@v1.7.1/viper.go:365 +0xe6
+created by github.com/spf13/viper.(*Viper).WatchConfig.func1
+	/Users/rogerluo/go/pkg/mod/github.com/spf13/viper@v1.7.1/viper.go:363 +0x2e5
+
+goroutine 183 [chan receive, 6 minutes]:
+github.com/TarsCloud/TarsGo/tars/util/grace.GraceHandler(0x1cb8d58, 0x1cb8d80)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/util/grace/signal_unix.go:18 +0xeb
+github.com/TarsCloud/TarsGo/tars.handleSignal()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:456 +0x39
+created by github.com/TarsCloud/TarsGo/tars.mainloop
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:470 +0x1ea
+
+goroutine 134 [syscall, 6 minutes]:
+os/signal.signal_recv(0xc00007fe60)
+	/usr/local/go/src/runtime/sigqueue.go:144 +0x9d
+os/signal.loop()
+	/usr/local/go/src/os/signal/signal_unix.go:23 +0x25
+created by os/signal.Notify.func1.1
+	/usr/local/go/src/os/signal/signal.go:150 +0x45
+
+goroutine 27 [chan receive, 2 minutes]:
+github.com/go-redis/redis/internal/pool.(*ConnPool).reaper(0xc000578000, 0xdf8475800)
+	/Users/rogerluo/go/pkg/mod/github.com/go-redis/redis@v6.15.9+incompatible/internal/pool/pool.go:449 +0x8d
+created by github.com/go-redis/redis/internal/pool.NewConnPool
+	/Users/rogerluo/go/pkg/mod/github.com/go-redis/redis@v6.15.9+incompatible/internal/pool/pool.go:99 +0x1b6
+
+goroutine 41 [sleep]:
+time.Sleep(0x3b9aca00)
+	/usr/local/go/src/runtime/time.go:188 +0xbf
+github.com/go-redis/redis/internal/pool.(*ConnPool).tryDial(0xc000578000)
+	/Users/rogerluo/go/pkg/mod/github.com/go-redis/redis@v6.15.9+incompatible/internal/pool/pool.go:183 +0x48
+created by github.com/go-redis/redis/internal/pool.(*ConnPool).newConn
+	/Users/rogerluo/go/pkg/mod/github.com/go-redis/redis@v6.15.9+incompatible/internal/pool/pool.go:164 +0xeb
+
+goroutine 28 [select]:
+go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*rttMonitor).start(0xc000108190)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/rtt_monitor.go:87 +0x17d
+created by go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*rttMonitor).connect
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/rtt_monitor.go:50 +0x5c
+
+goroutine 29 [select]:
+go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*Server).update.func3()
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/server.go:473 +0x168
+go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*Server).update(0xc00013a0e0)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/server.go:525 +0x4e2
+created by go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*Server).Connect
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/server.go:198 +0x20a
+
+goroutine 167 [runnable]:
+syscall.syscall(0x1086bc0, 0x19, 0xc000061b9c, 0xc000061b7c, 0xffffffffffffffff, 0xffffffffffffffff, 0x23)
+	/usr/local/go/src/runtime/sys_darwin.go:63 +0x2e
+syscall.accept(0x19, 0xc000061b9c, 0xc000061b7c, 0xffffffffffffffff, 0x1e8f180, 0x242daa0)
+	/usr/local/go/src/syscall/zsyscall_darwin_amd64.go:60 +0x6c
+syscall.Accept(0x19, 0x106b235, 0x349ea58, 0x72, 0x1e8f100, 0xc000061c80)
+	/usr/local/go/src/syscall/syscall_bsd.go:276 +0x85
+internal/poll.accept(0x19, 0x72, 0x0, 0x0, 0x0, 0x10583ec, 0x10728a0, 0xc000061d08)
+	/usr/local/go/src/internal/poll/sys_cloexec.go:24 +0x36
+internal/poll.(*FD).Accept(0xc00043cd00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+	/usr/local/go/src/internal/poll/fd_unix.go:385 +0xf2
+net.(*netFD).accept(0xc00043cd00, 0xc00043cd00, 0x1cba420, 0xc000061e68)
+	/usr/local/go/src/net/fd_unix.go:172 +0x45
+net.(*TCPListener).accept(0xc00019e320, 0xe9, 0x0, 0x0)
+	/usr/local/go/src/net/tcpsock_posix.go:139 +0x32
+net.(*TCPListener).AcceptTCP(0xc00019e320, 0xbfedac858db56258, 0x5eb4a015ac, 0x24975a0)
+	/usr/local/go/src/net/tcpsock.go:248 +0x65
+github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).Handle(0xc000218070, 0xffffffffffffffff, 0x0)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:108 +0x77
+github.com/TarsCloud/TarsGo/tars/transport.(*TarsServer).Serve(...)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tarsserver.go:75
+github.com/TarsCloud/TarsGo/tars.Run.func2(0xc00013e070, 0xc0001a0230, 0x1c7da22, 0x8)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:302 +0x168
+created by github.com/TarsCloud/TarsGo/tars.Run
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:294 +0x532
+
+goroutine 166 [runnable]:
+net.(*OpError).Temporary(0xc0000309b0, 0x1e8d801)
+	/usr/local/go/src/net/net.go:514 +0x154
+github.com/TarsCloud/TarsGo/tars/transport.isNoDataError(0x1e8d840, 0xc0000309b0, 0x1e8d840)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/common.go:33 +0x75
+github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).Handle(0xc0004e4230, 0xffffffffffffffff, 0x0)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:110 +0xac
+github.com/TarsCloud/TarsGo/tars/transport.(*TarsServer).Serve(...)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tarsserver.go:75
+github.com/TarsCloud/TarsGo/tars.Run.func2(0xc00013e000, 0xc0001a0230, 0xc00045d040, 0x16)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:302 +0x168
+created by github.com/TarsCloud/TarsGo/tars.Run
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/application.go:294 +0x532
+
+goroutine 616 [syscall]:
+syscall.syscall(0x1087060, 0x1d, 0xc00030d000, 0x1000, 0x0, 0x0, 0x0)
+	/usr/local/go/src/runtime/sys_darwin.go:63 +0x2e
+syscall.read(0x1d, 0xc00030d000, 0x1000, 0x1000, 0x3f, 0x5, 0x2000)
+	/usr/local/go/src/syscall/zsyscall_darwin_amd64.go:1242 +0x66
+syscall.Read(0x1d, 0xc00030d000, 0x1000, 0x1000, 0x72, 0x0, 0x0)
+	/usr/local/go/src/syscall/syscall_unix.go:187 +0x49
+internal/poll.ignoringEINTR(0x1cbb1d0, 0x1d, 0xc00030d000, 0x1000, 0x1000, 0xc000062d20, 0x100f810, 0xc00059c300)
+	/usr/local/go/src/internal/poll/fd_unix.go:567 +0x52
+internal/poll.(*FD).Read(0xc0004e6400, 0xc00030d000, 0x1000, 0x1000, 0x0, 0x0, 0x0)
+	/usr/local/go/src/internal/poll/fd_unix.go:155 +0x149
+net.(*netFD).Read(0xc0004e6400, 0xc00030d000, 0x1000, 0x1000, 0x5fd63a95, 0xc000062d78, 0x1094286)
+	/usr/local/go/src/net/fd_posix.go:55 +0x4f
+net.(*conn).Read(0xc000198018, 0xc00030d000, 0x1000, 0x1000, 0x3f, 0x1, 0x0)
+	/usr/local/go/src/net/net.go:182 +0x8e
+github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).recv(0xc0004e4230, 0xc000090180)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:219 +0x1f9
+github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).Handle.func1(0xc0000bed90, 0xc0004e4230, 0xc000198018)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:128 +0x338
+created by github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).Handle
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:118 +0x19b
+
+goroutine 617 [select]:
+go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*Topology).selectServerFromSubscription(0xc0005780b0, 0x1ea4700, 0xc000182840, 0xc000182ae0, 0x1e8ea80, 0xc00019ed00, 0xc000182a80, 0xc000182a80, 0x0, 0x0, ...)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/topology.go:435 +0x13c
+go.mongodb.org/mongo-driver/x/mongo/driver/topology.(*Topology).SelectServer(0xc0005780b0, 0x1ea4700, 0xc000182840, 0x1e8ea80, 0xc00019ed00, 0x0, 0x0, 0x0, 0x0)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/topology/topology.go:332 +0xfe
+go.mongodb.org/mongo-driver/x/mongo/driver.Operation.selectServer(0xc000138890, 0xc0001a0490, 0xd, 0x1e95bc0, 0xc0005780b0, 0xc0001388a0, 0x1e8ea80, 0xc00019ed00, 0x2482500, 0xc0002daa20, ...)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/operation.go:210 +0xd5
+go.mongodb.org/mongo-driver/x/mongo/driver.Operation.Execute(0xc000138890, 0xc0001a0490, 0xd, 0x1e95bc0, 0xc0005780b0, 0xc0001388a0, 0x1e8ea80, 0xc00019ed00, 0x2482500, 0xc0002daa20, ...)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/operation.go:238 +0xe5
+go.mongodb.org/mongo-driver/x/mongo/driver/operation.(*Find).Execute(0xc000302000, 0x1ea4700, 0xc000182840, 0xc000190500, 0x5)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/x/mongo/driver/operation/find.go:102 +0x22f
+go.mongodb.org/mongo-driver/mongo.(*Collection).Find(0xc0001826c0, 0x1ea4700, 0xc000182840, 0x1b616a0, 0xc0001935c0, 0xc000138860, 0x2, 0x2, 0x1cbb158, 0xc000022058, ...)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/mongo/collection.go:1232 +0x669
+go.mongodb.org/mongo-driver/mongo.(*Collection).FindOne(0xc0001826c0, 0x1ea4700, 0xc000182840, 0x1b616a0, 0xc0001935c0, 0xc0000220b8, 0x1, 0x1, 0x1)
+	/Users/rogerluo/go/pkg/mod/go.mongodb.org/mongo-driver@v1.4.1/mongo/collection.go:1287 +0x4a7
+base/server/pkg/database/mongo.(*CollectionInfo).FindOne(0xc00009e780, 0x1b2efe0, 0xc00009e680, 0x0, 0x0)
+	/Users/rogerluo/go/src/dev/base/server/pkg/database/mongo/mongo.go:256 +0x165
+server/service.GoodsDistributionDetail(0x0, 0x0, 0x71323b, 0xc000182420, 0x60, 0x58, 0x1c08560, 0x0, 0x0, 0x40, ...)
+	/Users/rogerluo/go/src/dev/cmd/kf001/serverShop/service/shop_group.go:441 +0x11b
+server/handler.(*ShopSysImp).GoodsDistributionDetail(0x24c9e98, 0x1ea4740, 0xc0001922a0, 0x71323b, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3486a38, ...)
+	/Users/rogerluo/go/src/dev/cmd/kf001/serverShop/handler/shopSys.go:215 +0x86
+base/model/imp/serverShop.(*ShopSys).Dispatch(0xc000444690, 0x1ea4740, 0xc0001922a0, 0x1c4e6a0, 0x24c9e98, 0xc0002ac120, 0xc0004a6410, 0x100f801, 0x0, 0x0)
+	/Users/rogerluo/go/src/dev/model/imp/serverShop/serverShop_sys.pb.go:5474 +0x80b3
+github.com/TarsCloud/TarsGo/tars.(*TarsProtocol).Invoke(0xc00039e4e0, 0x1ea4740, 0xc0001922a0, 0xc00003a140, 0x4b, 0x4b, 0x0, 0x0, 0x0)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/tarsprotocol.go:87 +0x4b4
+github.com/TarsCloud/TarsGo/tars/transport.(*TarsServer).invoke(0xc00013e000, 0x1ea4740, 0xc0001922a0, 0xc00003a140, 0x4b, 0x4b, 0xc00019e0c0, 0x2, 0x2)
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tarsserver.go:121 +0xc4
+github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).handleConn.func1()
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:71 +0x305
+created by github.com/TarsCloud/TarsGo/tars/transport.(*tcpHandler).handleConn
+	/Users/rogerluo/go/pkg/mod/github.com/!tars!cloud/!tars!go@v1.1.5/tars/transport/tcphandler.go:92 +0xc6
